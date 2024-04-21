@@ -9,6 +9,9 @@ import ttkbootstrap as ttkb
 from ttkbootstrap.constants import *
 import random
 from faker import Faker
+import backend
+
+
 faker_rus = Faker('ru_RU')
 faker_us = Faker('en_US')
 faker = Faker()
@@ -80,16 +83,20 @@ class MainWindow(tk.Tk):
         self.password = tk.Button(self, text='Сгенерировать', font=('Roboto', 14), command=self.open, state='disabled')
         self.password.place(x=220, y=300)
 
+        self.save = tk.Button(self, text='Сохранённые записи', command=self.open1)
+        self.save.place(x=25, y=350)
+
 
         self.r1.trace('w', self.check)
         self.r2.trace('w', self.check)
+
 
     def open(self):
         child_window = ChildWindow(self.master, self.scale.get(), self.var.get(),
                                    self.combobox_mail.get(), self.combobox_country.get())
 
     def check(self, *args):
-        if self.r1.get() and self.r2.get():
+        if self.r1.get() and self.r2.get() and self.scale.get():
             self.password.config(state='normal')
         else:
             self.password.config(state='disabled')
@@ -98,9 +105,13 @@ class MainWindow(tk.Tk):
         self.scale_label.config(text=f'{int(self.scale.get())}')
 
 
+    def open1(self):
+        window = ChildWindow2(self)
+
+
 
 class ChildWindow(tk.Toplevel):
-    def __init__(self, parent, scale_value=5, var_value=1, combobox_male_value='uuu',
+    def __init__(self, parent, scale_value=8, var_value=1, combobox_male_value='uuu',
                  combobox_country_value='None'):
         super().__init__(parent)
 
@@ -109,6 +120,7 @@ class ChildWindow(tk.Toplevel):
         self.combobox_male_value = combobox_male_value
         self.scale_value = scale_value
         self.var_value = var_value
+
         self.title("Учётная запись")
 
 
@@ -190,6 +202,10 @@ class ChildWindow(tk.Toplevel):
         # Кнопка для закрытия дочернего окна
         self.btn_close = tk.Button(self, text='Close', command=lambda: self.destroy())
         self.btn_close.place(x=540, y=350)
+
+        self.dbsave = tk.Button(self, text='Сохранить', command=self.save)
+        self.dbsave.place(x=50, y=350)
+
 
 
     def copy_to_clipboard(self):
@@ -319,6 +335,52 @@ class ChildWindow(tk.Toplevel):
         self.phone_entry.delete(0, END)
         final_phone = self.gen_phone()
         self.phone_entry.insert(10, final_phone)
+
+    def save(self):
+        # this function will insert all the data into the
+        # database
+        backend.enter(self.fio_entry.get(), self.nick_entry.get(),
+                      self.gmail_entry.get(), self.entry.get(), self.phone_entry.get(),
+                      self.adress_entry.get(), self.birth_entry.get())
+        messagebox.showinfo("i", "Запись сохранена")
+
+
+
+
+class ChildWindow2(tk.Toplevel):
+    def __init__(self, parent):
+        super().__init__(parent)
+
+        self.title('Сохранённые записи')
+
+        self.geometry(calculate_window())
+
+        self.tree = ttk.Treeview(self, height=5)
+        self.tree['columns'] = ('ФИО', 'Ник', 'Почта', 'Пароль', 'Номер телефона', 'Адрес', 'Дата рождения')
+        self.tree.column('#0', width=0, stretch=NO)
+        self.tree.column('ФИО', width=60, anchor=W)
+        self.tree.column('Ник', width=60, anchor=W)
+        self.tree.column('Почта', width=60, anchor=W)
+        self.tree.column('Пароль', width=60, anchor=W)
+        self.tree.column('Номер телефона', width=80, anchor=W)
+        self.tree.column('Адрес', width=80, anchor=W)
+        self.tree.column('Дата рождения', width=80, anchor=W)
+        self.tree.heading('#0', text='')
+        self.tree.heading('ФИО', text='ФИО')
+        self.tree.heading('Ник', text='Ник')
+        self.tree.heading('Почта', text='Почта')
+        self.tree.heading('Пароль', text='Пароль')
+        self.tree.heading('Номер телефона', text='Ном.телефона')
+        self.tree.heading('Адрес', text='Адрес')
+        self.tree.heading('Дата рождения', text='Дата рождения')
+        self.tree.pack()
+
+        for row in backend.show():
+            self.tree.insert(parent='', text='', index='end',
+                             values=(row[0], row[1], row[2], row[3], row[4], row[5], row[6]))
+
+
+
 
 
 
