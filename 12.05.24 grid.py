@@ -30,6 +30,9 @@ class MainWindow(tk.Tk):
         self.r2 = tk.StringVar(master=self)
         self.title("Генератор учётной записи")
 
+        self.box = ttkb.Frame(self, padding=10)
+        self.box.grid(column=1, row=2, rowspan=10)
+
 
 
 
@@ -43,47 +46,50 @@ class MainWindow(tk.Tk):
         # Кнопка для открытия дочернего окна
 
         # ОКНА ТЕКСТА И ВЫВОДА
-        self.password_lb = ttkb.Label(self, text='Выберите длину пароля', foreground="white", font=(24))
-        self.password_lb.grid(column=1,row=3, pady=4,sticky='w')
+        self.password_lb = ttkb.Label(self.box, text='Выберите длину пароля', foreground="white", font=(24))
+        self.password_lb.grid(column=1,row=3, pady=8,sticky='w')
 
-        self.scale = ttkb.Scale(self, from_=8, to=100, orient='horizontal', command=self.scale_update)
-        self.scale.grid(column=2,row=3, pady=8, sticky='nsew')
+        self.scale = ttkb.Scale(self.box, from_=8, to=100, orient='horizontal', command=self.scale_update)
+        self.scale.grid(column=2,row=3, pady=8, sticky='nsew', padx=20)
 
-        self.scale_label = ttkb.Label(self, text='', font=(18))
+        self.scale_label = ttkb.Label(self.box, text='', font=(18))
         self.scale_label.grid(column=2,row=2)
 
         # ЧЕКБОКС!!!!!!!!
 
-        self.check_level = ttkb.Label(self, text='Выберите уровень', foreground="white", font=(24))
+        self.check_level = ttkb.Label(self.box, text='Выберите уровень', foreground="white", font=(24))
         self.check_level.grid(column=1,row=4, pady=8, sticky='w')
 
-        self.var = IntVar()
-        self.button1 = ttkb.Radiobutton(self, text='Простой', variable=self.var, value=0)
-        self.button1.grid(column=2,row=4, sticky='w', padx=8, pady=8)
-        self.button2 = ttkb.Radiobutton(self, text='Средний', variable=self.var, value=1)
-        self.button2.grid(column=3,row=4, sticky='w', padx=2, pady=8)
-        self.button3 = ttkb.Radiobutton(self, text='Сложный', variable=self.var, value=2)
-        self.button3.grid(column=4,row=4, sticky='w', padx=2, pady=8)
+        self.level_box = ttkb.Frame(self.box)
+        self.level_box.grid(column=2, columnspan=3, row=4)
 
-        self.mail_lb = ttkb.Label(self, text='Почта', foreground="white", font=(18))
+        self.var = IntVar()
+        self.button1 = ttkb.Radiobutton(self.level_box, text='Простой', variable=self.var, value=0)
+        self.button1.grid(column=2,row=4, sticky='w', padx=20, pady=8)
+        self.button2 = ttkb.Radiobutton(self.level_box, text='Средний', variable=self.var, value=1)
+        self.button2.grid(column=3,row=4, sticky='w', padx=0, pady=8)
+        self.button3 = ttkb.Radiobutton(self.level_box, text='Сложный', variable=self.var, value=2)
+        self.button3.grid(column=4,row=4, sticky='w', padx=8, pady=10)
+
+        self.mail_lb = ttkb.Label(self.box, text='Почта', foreground="white", font=(18))
         self.mail_lb.grid(column=1,row=5, pady=8, sticky='w')
 
         items = ["Гугл", "Яндекс"]
 
-        self.combobox_mail = ttkb.Combobox(self, values=items, textvariable=self.r1)
-        self.combobox_mail.grid(column=2,row=5, sticky='e', pady=8)
+        self.combobox_mail = ttkb.Combobox(self.box, values=items, textvariable=self.r1)
+        self.combobox_mail.grid(column=2,row=5, sticky='e', pady=8, padx=0)
 
-        self.country_lb = ttkb.Label(self, text='Страна', foreground="white", font=(18))
+        self.country_lb = ttkb.Label(self.box, text='Страна', foreground="white", font=(18))
         self.country_lb.grid(column=1,row=6, pady=8, sticky='w')
         countries = ['US', 'RUS']
-        self.combobox_country = ttkb.Combobox(self, values=countries, textvariable=self.r2)
-        self.combobox_country.grid(column=2,row=6, pady=8)
+        self.combobox_country = ttkb.Combobox(self.box, values=countries, textvariable=self.r2)
+        self.combobox_country.grid(column=2,row=6, pady=8, padx=40)
 
-        self.password = ttkb.Button(self, text='Сгенерировать', command=self.open, state='disabled')
-        self.password.grid(column=1,row=7, sticky='e', pady=8)
+        self.password = ttkb.Button(self.box, text='Сгенерировать', command=self.open, state='disabled', width=20)
+        self.password.grid(column=1,row=8, pady=35, columnspan=2, rowspan=2)
 
         self.save = ttkb.Button(self, text='Сохранённые записи', command=self.open1)
-        self.save.grid(column=0,row=8, padx=10, pady=16, sticky='s')
+        self.save.grid(column=0,row=12, padx=10, pady=0, sticky='w', columnspan=2)
 
 
         self.r1.trace('w', self.check)
@@ -127,90 +133,96 @@ class ChildWindow(tk.Toplevel):
         self.scale_value = scale_value
         self.var_value = var_value
 
+
+        self.entry_box = ttkb.Frame(self,padding=20)
+        self.entry_box.grid(column=1, columnspan=3, rowspan=7, padx=50, pady=40, sticky='s')
+
+
         self.title("Учётная запись")
 
 
         self.geometry(calculate_window())
 
-        self.password_entry_lb = tk.Label(self, text='Ваш пароль')
-        self.password_entry_lb.place(x=120, y=50)
+        self.password_entry_lb = ttkb.Label(self.entry_box, text='Ваш пароль')
+        self.password_entry_lb.grid(column=1, row=1, pady=8)
 
-        self.entry = tk.Entry(self)
+        self.entry = ttkb.Entry(self.entry_box)
         self.entry.insert(10, f'{self.generate_password()}')
-        self.entry.place(x=250, y=50)
+        self.entry.grid(column=2,row=1, pady=8)
 
-        self.copies = ttkb.Button(self, text='Скопировать', command=self.copy_to_clipboard, bootstyle='outline')
-        self.copies.place(x=400, y=45)
+        self.copies = ttkb.Button(self.entry_box, text='Скопировать', command=self.copy_to_clipboard, bootstyle='outline')
+        self.copies.grid(column=3, row=1, sticky='e', pady=8)
 
-        self.again = tk.Button(self, text='Сгенерировать заново', command=self.generate)
-        self.again.place(x=250, y=350)
 
-        self.nick_lb = tk.Label(self, text='Ваш ник')
-        self.nick_lb.place(x=120, y=90)
+        self.nick_lb = ttkb.Label(self.entry_box, text='Ваш ник')
+        self.nick_lb.grid(column=1, row=2, pady=8)
 
-        self.nick_entry = tk.Entry(self)
+        self.nick_entry = ttkb.Entry(self.entry_box)
         self.nick_entry.insert(10, f'{self.nick}')
-        self.nick_entry.place(x=250, y=90)
+        self.nick_entry.grid(column=2,row=2, pady=8)
 
-        self.copies = ttkb.Button(self, text='Скопировать', command=self.copy_to_clipboard1, bootstyle='outline')
-        self.copies.place(x=400, y=85)
+        self.copies = ttkb.Button(self.entry_box, text='Скопировать', command=self.copy_to_clipboard1, bootstyle='outline')
+        self.copies.grid(column=3,row=2, pady=8)
 
-        self.fio_lb = tk.Label(self, text='Ваше ФИО')
-        self.fio_lb.place(x=120, y=130)
+        self.fio_lb = ttkb.Label(self.entry_box, text='Ваше ФИО')
+        self.fio_lb.grid(column=1, row=3, pady=8)
 
-        self.fio_entry = tk.Entry(self)
+        self.fio_entry = ttkb.Entry(self.entry_box)
         self.fio_entry.insert(10, f'{self.get_fio()}')
-        self.fio_entry.place(x=250, y=130)
+        self.fio_entry.grid(column=2,row=3, pady=8)
 
-        self.copies = ttkb.Button(self, text='Скопировать', command=self.copy_to_clipboard2, bootstyle='outline')
-        self.copies.place(x=400, y=125)
+        self.copies = ttkb.Button(self.entry_box, text='Скопировать', command=self.copy_to_clipboard2, bootstyle='outline')
+        self.copies.grid(column=3, row=3, pady=8)
 
-        self.adress_lb = tk.Label(self, text='Адрес')
-        self.adress_lb.place(x=120, y=170)
+        self.adress_lb = ttkb.Label(self.entry_box, text='Адрес')
+        self.adress_lb.grid(column=1,row=4, pady=8)
 
-        self.adress_entry = tk.Entry(self)
+        self.adress_entry = ttkb.Entry(self.entry_box)
         self.adress_entry.insert(10, f'{self.generate_adress()}')
-        self.adress_entry.place(x=250, y=170)
+        self.adress_entry.grid(column=2,row=4, pady=8)
 
-        self.copies = ttkb.Button(self, text='Скопировать', command=self.copy_to_clipboard3, bootstyle='outline')
-        self.copies.place(x=400, y=165)
+        self.copies = ttkb.Button(self.entry_box, text='Скопировать', command=self.copy_to_clipboard3, bootstyle='outline')
+        self.copies.grid(column=3,row=4, pady=8)
 
-        self.birth_lb = tk.Label(self, text='Дата рождения')
-        self.birth_lb.place(x=120, y=210)
+        self.birth_lb = ttkb.Label(self.entry_box, text='Дата рождения')
+        self.birth_lb.grid(column=1,row=5, pady=8)
 
-        self.birth_entry = tk.Entry(self)
+        self.birth_entry = ttkb.Entry(self.entry_box)
         self.birth_entry.insert(10, f'{self.birth_date()}')
-        self.birth_entry.place(x=250, y=210)
+        self.birth_entry.grid(column=2,row=5, pady=8)
 
-        self.copies = ttkb.Button(self, text='Скопировать', command=self.copy_to_clipboard4, bootstyle='outline')
-        self.copies.place(x=400, y=205)
+        self.copies = ttkb.Button(self.entry_box, text='Скопировать', command=self.copy_to_clipboard4, bootstyle='outline')
+        self.copies.grid(column=3,row=5, pady=8)
 
-        self.gmail_lb = tk.Label(self, text='Ваша Почта')
-        self.gmail_lb.place(x=120, y=250)
+        self.gmail_lb = ttkb.Label(self.entry_box, text='Ваша Почта')
+        self.gmail_lb.grid(column=1,row=6, pady=8)
 
-        self.gmail_entry = tk.Entry(self)
+        self.gmail_entry = ttkb.Entry(self.entry_box)
         self.gmail_entry.insert(10, f'{self.choose_mail()}')
-        self.gmail_entry.place(x=250, y=250)
+        self.gmail_entry.grid(column=2,row=6, pady=8)
 
-        self.copies = ttkb.Button(self, text='Скопировать', command=self.copy_to_clipboard5, bootstyle='outline')
-        self.copies.place(x=400, y=245)
+        self.copies = ttkb.Button(self.entry_box, text='Скопировать', command=self.copy_to_clipboard5, bootstyle='outline')
+        self.copies.grid(column=3,row=6, pady=8)
 
-        self.phone_lb = tk.Label(self, text='Ном. телефона')
-        self.phone_lb.place(x=120, y=290)
+        self.phone_lb = ttkb.Label(self.entry_box, text='Ном. телефона')
+        self.phone_lb.grid(column=1,row=7, pady=8)
 
-        self.phone_entry = tk.Entry(self)
+        self.phone_entry = ttkb.Entry(self.entry_box)
         self.phone_entry.insert(10, f'{self.gen_phone()}')
-        self.phone_entry.place(x=250, y=290)
+        self.phone_entry.grid(column=2,row=7, pady=8)
 
-        self.copies = ttkb.Button(self, text='Скопировать', command=self.copy_to_clipboard6, bootstyle='outline')
-        self.copies.place(x=400, y=285)
+        self.copies = ttkb.Button(self.entry_box, text='Скопировать', command=self.copy_to_clipboard6, bootstyle='outline')
+        self.copies.grid(column=3,row=7, pady=8)
 
         # Кнопка для закрытия дочернего окна
-        self.btn_close = tk.Button(self, text='Close', command=lambda: self.destroy())
-        self.btn_close.place(x=540, y=350)
+        self.btn_close = ttkb.Button(self, text='Close', command=lambda: self.destroy())
+        self.btn_close.grid(column=2,row=10)
 
-        self.dbsave = tk.Button(self, text='Сохранить', command=self.save)
-        self.dbsave.place(x=50, y=350)
+        self.dbsave = ttkb.Button(self, text='Сохранить', command=self.save)
+        self.dbsave.grid(column=0,row=10)
+
+        self.again = ttkb.Button(self, text='Сгенерировать заново', command=self.generate)
+        self.again.grid(column=1,row=10)
 
 
 
