@@ -405,10 +405,7 @@ class ChildWindow2(tk.Toplevel):
             label="Копировать")
         self.popup1.add_command(
             command=self.delete_row,
-            label="Удалить строку")
-        self.popup1.add_command(
-            command=self.delete_all,
-            label="Удалить всё")
+            label="Удалить")
         self.popup1.add_command(
             command=self.quit,
             label="Выйти")
@@ -425,18 +422,18 @@ class ChildWindow2(tk.Toplevel):
 
 
     def delete_row(self):
-        selected_item = self.tree.selection()[0]  ## get selected item
+        selected_item = self.tree.selection()[0]
+        values = tuple(self.tree.item(selected_item)['values'])
         self.tree.delete(selected_item)
-        conn = sqlite3.connect('table.db')  # замените на вашу базу данных
+        conn = sqlite3.connect('table.db')
         cursor = conn.cursor()
 
-        cursor.execute("DELETE FROM data WHERE password=?", (selected_item,))  # замените 'my_table' на вашу таблицу
+        query = "DELETE FROM data WHERE fio=? AND nick=? AND mail=? AND password=? AND phone=? AND adress=? AND date=?"
+        cursor.execute(query, (*values,))
         conn.commit()
         conn.close()
+        tk.messagebox.showinfo(title='i', message='Запись удалена!')
 
-
-    def delete_all(self):
-        pass
 
 
     def popup_menu(self, event):
