@@ -45,22 +45,6 @@ def show():
     return i
 
 
-def Del(password):
-    conn = sq.connect(db)
-    c = conn.cursor()
-    c.execute("DELETE FROM data WHERE password=(?)", (password,))
-    conn.commit()
-    conn.close()
-
-
-def edit(fio, nick, mail, password, phone, adress, date):
-    conn = sq.connect(db)
-    c = conn.cursor()
-    c.execute("UPDATE data SET fio=?, nick=(?),"
-              " mail=?, phone=(?), adress=?, date=(?) WHERE password=(?) ",
-              (fio, nick, mail, password, phone, adress, date))
-    conn.commit()
-    conn.close()
 
 
 def check():
