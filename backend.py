@@ -1,7 +1,10 @@
 import sqlite3 as sq
 
+# база данных
 db = 'table.db'
 
+
+# соединение и создание таблицы
 def connect():
 
     conn = sq.connect(db)
@@ -25,6 +28,7 @@ def connect():
     conn.close()
 
 
+# вставка значений
 def enter(fio, nick, mail, password, phone, adress, date):
     conn = sq.connect(db)
     c = conn.cursor()
@@ -33,6 +37,7 @@ def enter(fio, nick, mail, password, phone, adress, date):
     conn.close()
 
 
+# выбирает все значения, чтобы потом отобразить в виджете TreeView
 def show():
     conn = sq.connect(db)
     c = conn.cursor()
@@ -45,14 +50,6 @@ def show():
     return i
 
 
-
-
-def check():
-
-    if len(show()) == 0:
-        return False
-    else:
-        return True
 
 
 
